@@ -12,4 +12,4 @@ jobs:
     steps:
       - name: python test
         run: print('hello world')
-     #   shell: python
+        shell: python
