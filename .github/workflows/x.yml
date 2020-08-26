@@ -11,5 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: python test
-        run: print('hello world')
+        run: |
+          python -V
+          print('hello world')
         shell: python
