@@ -8,8 +8,8 @@ on:
 
 jobs:
   test:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
       - name: python test
         run: print('hello world')
-        shell: python
+     #   shell: python
