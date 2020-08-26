@@ -10,8 +10,9 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
+      - run: python -V
       - name: python test
         run: |
-          python -V
-          print('hello world')
+          print 'hello the world'
+          print('hello world.')
         shell: python
