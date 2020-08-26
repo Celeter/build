@@ -1,8 +1,6 @@
 name: 测试
 
 on:
-  watch:
-    types: [started]
   push:
     branches: [master]
 
