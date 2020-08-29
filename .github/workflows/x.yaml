@@ -60,5 +60,5 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: v2
-          path: ${{ github.workspace }}/legado/V2rayNG/app/build/outputs/apk/release/app-arm64-v8a-release*.apk
+          path: ${{ github.workspace }}/legado/V2rayNG/app/build/outputs/apk/release/*.apk
           if-no-files-found: error
