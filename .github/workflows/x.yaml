@@ -12,6 +12,11 @@ jobs:
 
     if: ${{ github.actor == 'Celeter' }}
     steps:
+      - name: Checkout this project
+        uses: actions/checkout@v2
+        with:
+          path: actions
+
       - name: Set up JDK 1.8
         uses: actions/setup-java@v1
         with:
@@ -43,17 +48,7 @@ jobs:
 
       - name: config
         run: |    
-          sed '13a     signingConfigs {' build.gradle -i
-          sed '14a         myConfig {' build.gradle -i
-          sed '15a             storeFile file(RELEASE_STORE_FILE)' build.gradle -i
-          sed '16a             storePassword RELEASE_KEY_PASSWORD' build.gradle -i
-          sed '17a             keyAlias RELEASE_KEY_ALIAS' build.gradle -i
-          sed '18a             keyPassword RELEASE_STORE_PASSWORD' build.gradle -i
-          sed '19a         }' build.gradle -i
-          sed '20a     }' build.gradle -i
-          sed '22c         applicationId "com.v2ray.celeter"' build.gradle -i
-          sed '31a             signingConfig signingConfigs.myConfig' build.gradle -i
-        working-directory: legado/V2rayNG/app
+          mv -f actions/.github/scripts/v2.txt legado/V2rayNG/app/build.gradle
 
       - name: Build with Gradle
         run: |
