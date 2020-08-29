@@ -41,6 +41,11 @@ jobs:
         env:
           LARGE_SECRET_PASSPHRASE: ${{ secrets.ANDROID_SECRET }}
 
+      - name: config
+        run: |
+          sed "15c         applicationId "com.v2ray.celeter" build.gradle -i
+        working-directory: legado/V2rayNG/app
+
       - name: Build with Gradle
         run: |
           chmod +x gradlew
@@ -51,5 +56,5 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: v2
-          path: ${{ github.workspace }}/legado/V2rayNG/app/build/
+          path: ${{ github.workspace }}/legado/V2rayNG/app/build/outputs
           if-no-files-found: error
