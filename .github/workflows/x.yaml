@@ -44,6 +44,14 @@ jobs:
       - name: config
         run: |
           sed '15c         applicationId "com.v2ray.celeter"' build.gradle -i
+          sed '22a     signingConfigs {' build.gradle -i
+          sed '23a         myConfig {' build.gradle -i
+          sed '24a             storeFile file(RELEASE_STORE_FILE)' build.gradle -i
+          sed '25a             storePassword RELEASE_KEY_PASSWORD' build.gradle -i
+          sed '26a             keyAlias RELEASE_KEY_ALIAS' build.gradle -i
+          sed '27a             keyPassword RELEASE_STORE_PASSWORD' build.gradle -i
+          sed '28a         }' build.gradle -i
+          sed '29a     }' build.gradle -i
         working-directory: legado/V2rayNG/app
 
       - name: Build with Gradle
