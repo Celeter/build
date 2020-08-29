@@ -44,7 +44,7 @@ jobs:
       - name: Build with Gradle
         run: |
           chmod +x gradlew
-          ./gradlew assembleGoogleRelease
+          ./gradlew assembleRelease
         working-directory: legado/V2rayNG
 
       - name: upload apk
