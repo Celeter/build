@@ -1,0 +1,55 @@
+name: Build v2rayNG
+
+# https://docs.github.com/cn/actions/configuring-and-managing-workflows/creating-and-storing-encrypted-secrets
+# https://docs.github.com/cn/actions/reference/events-that-trigger-workflows
+on:
+  push:
+    branches: [master]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    if: ${{ github.actor == 'Celeter' }}
+    steps:
+      - name: Set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+
+      - name: Checkout android project
+        uses: actions/checkout@v2
+        with:
+          repository: 2dust/v2rayNG
+          ref: master
+          fetch-depth: 1
+          path: legado
+
+      - name: Checkout private key
+        uses: actions/checkout@v2
+        with:
+          repository: Celeter/secrets
+          token: ${{ secrets.ACCESS_TOKEN }}
+          path: key
+
+      - name: Decrypt large secret
+        run: |
+          gpg --quiet --batch --yes --decrypt --passphrase="$LARGE_SECRET_PASSPHRASE" --output $GITHUB_WORKSPACE/legado/V2rayNG/app/gradle.properties $GITHUB_WORKSPACE/key/encrypt/gradle.properties.gpg
+          echo "Decrypt gradle.properties done"
+          gpg --quiet --batch --yes --decrypt --passphrase="$LARGE_SECRET_PASSPHRASE" --output $GITHUB_WORKSPACE/legado/V2rayNG/app/key.jks $GITHUB_WORKSPACE/key/encrypt/key.jks.gpg
+          echo "Decrypt key.jks done"
+        env:
+          LARGE_SECRET_PASSPHRASE: ${{ secrets.ANDROID_SECRET }}
+
+      - name: Build with Gradle
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleGoogleRelease
+        working-directory: legado/V2rayNG
+
+      - name: upload apk
+        uses: actions/upload-artifact@v2
+        with:
+          name: v2
+          path: ${{ github.workspace }}/legado/V2rayNG/app/build/outputs/apk/app/release/*.apk
+          if-no-files-found: error
