@@ -3,9 +3,9 @@ name: Build YueDu 3
 # https://docs.github.com/cn/actions/configuring-and-managing-workflows/creating-and-storing-encrypted-secrets
 # https://docs.github.com/cn/actions/reference/events-that-trigger-workflows
 on:
-  schedule:
+ # schedule:
     # 美国时间每周六9时5分（中国时间每周六17时5分）
-    - cron: '5 9 * * 6'
+ #   - cron: '5 9 * * 6'
   watch:
     types: [started]
 
