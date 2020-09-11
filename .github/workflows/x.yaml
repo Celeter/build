@@ -4,7 +4,7 @@ name: Build v2rayNG
 # https://docs.github.com/cn/actions/reference/events-that-trigger-workflows
 on:
   push:
-    branches: [master]
+    branches: [slave]
 
 jobs:
   build:
