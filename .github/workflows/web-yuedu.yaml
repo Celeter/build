@@ -1,0 +1,29 @@
+name: zsakvo/web-yuedu
+
+on:
+  push:
+    branches: [ master ]
+#  watch:
+#    types: [started]
+
+jobs:
+  master:
+    runs-on: ubuntu-latest
+    if: ${{ github.actor == 'Celeter' }}
+    steps:
+      - name: Checkout web-yuedu3 Project
+        uses: actions/checkout@v2
+        with:
+          repository: zsakvo/web-yuedu
+         
+      - name: Build web-yuedu3 Project
+        run: |
+          npm install
+          npm run-script build
+         
+      - name: Upload Files
+        uses: actions/upload-artifact@v2
+        with:
+          name: dist_master
+          path: dist
+          if-no-files-found: error
