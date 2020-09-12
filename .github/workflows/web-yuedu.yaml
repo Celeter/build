@@ -2,7 +2,7 @@ name: zsakvo/web-yuedu
 
 on:
   push:
-    branches: [ master ]
+    branches: [ slave ]
 #  watch:
 #    types: [started]
 
@@ -16,7 +16,7 @@ jobs:
         with:
           repository: zsakvo/web-yuedu
          
-      - name: Build web-yuedu3 Project
+      - name: Build web-yuedu Project
         run: |
           npm install
           npm run-script build
