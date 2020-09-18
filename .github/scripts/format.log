@@ -136,30 +136,23 @@ proxy-groups:
     url: http://www.gstatic.com/generate_204
     interval: 300
     proxies:
-      - '1'
-      - '2'
-      - '3'
-      - '4'
+      - '气抖冷'
 
   - name: ♻ 自动选择
     type: fallback
     url: http://www.gstatic.com/generate_204
     interval: 300
     proxies:
-      - '1'
-      - '2'
-      - '3'
-      - '4'
+      - '气抖冷'
+   
 
   - name: 🔰 延迟最低
     type: url-test
     url: http://www.gstatic.com/generate_204
     interval: 300
     proxies:
-      - '1'
-      - '2'
-      - '3'
-      - '4'
+      - '气抖冷'
+      
 
 #  - name: ⛔ 广告拦截
 #    type: select
