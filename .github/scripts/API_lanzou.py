@@ -96,6 +96,9 @@ if __name__ == "__main__":
         flie_path = os.environ["FILE_PATH"]
         print('文件路径:', flie_path)
 
+        # 解除大小限制
+        lzy.ignore_limits()
+
         if upload(flie_path, folder_id) == LanZouCloud.SUCCESS:
             # 获取文件夹分享信息
             info = lzy.get_share_info(folder_id, is_file=False)
