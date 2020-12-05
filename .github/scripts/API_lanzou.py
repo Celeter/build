@@ -50,10 +50,12 @@ def show_progress(file_name, total_size, now_size):
     percent = now_size / total_size
     bar_len = 50  # 进度条长总度
     bar_str = '>' * round(bar_len * percent) + '=' * round(bar_len * (1 - percent))
-    print('\r{:.2f}%\t[{}] {:.1f}/{:.1f}MB | {} '.format(
-        percent * 100, bar_str, now_size / 1048576, total_size / 1048576, file_name), end='')
-    if total_size == now_size:
-        print('任务完成')
+    #print('\r{:.2f}%\t[{}] {:.1f}/{:.1f}MB | {} '.format(
+    #    percent * 100, bar_str, now_size / 1048576, total_size / 1048576, file_name), end='')
+    print('\r{:.2f}%\t[{}] {:.1f}/{:.1f}MB '.format(
+        percent * 100, bar_str, now_size / 1048576, total_size / 1048576), end='')
+    #if total_size == now_size:
+    #    print('任务完成')
 
 
 def handler(fid, is_file):
