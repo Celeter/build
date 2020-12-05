@@ -14,7 +14,7 @@ def get_result(code):
     if code == LanZouCloud.SUCCESS:
         return '成功'
     else:
-        return '失败'
+        return f'失败,errorCode:{code}'
 
 
 def login():
@@ -23,7 +23,7 @@ def login():
     phpdisk_info = os.environ["LANZOU_PSD"]
     cookie = {'ylogin': ylogin, 'phpdisk_info': phpdisk_info}
     code = lzy.login_by_cookie(cookie)
-    print('login:', code)
+    #print('login:', code)
     print('登入结果:', get_result(code))
     return code
 
@@ -31,7 +31,7 @@ def login():
 def logout():
     print('开始登出')
     code = lzy.logout()
-    print('logout:', code)
+    #print('logout:', code)
     print('登出结果:', get_result(code))
     return lcode
 
@@ -40,13 +40,13 @@ def set_max_size(size=500):
     print('开始设置单文件大小上限')
     # 设置单文件大小限制
     code = lzy.set_max_size(size)
-    print('set_max_size:', code)
+    #print('set_max_size:', code)
     print('设置单文件大小上限结果:', get_result(code))
     return code
 
 
 def show_progress(file_name, total_size, now_size):
-    print("进入进度回调函数")
+    #print("进入进度回调函数")
     percent = now_size / total_size
     bar_len = 40  # 进度条长总度
     bar_str = '>' * round(bar_len * percent) + '=' * round(bar_len * (1 - percent))
@@ -57,7 +57,7 @@ def show_progress(file_name, total_size, now_size):
 
 
 def handler(fid, is_file):
-    print("进入上传回调函数")
+    #print("进入上传回调函数")
     if is_file:
         # 设置描述信息
         code = lzy.set_desc(fid, 'Legado', is_file=True)
@@ -70,7 +70,7 @@ def handler(fid, is_file):
 def upload(path, id):
     print('开始上传文件')
     code = lzy.upload_file(path, id, callback=show_progress, uploaded_handler=handler)
-    print('upload:', code)
+    #print('upload:', code)
     print('文件上传结果:', get_result(code))
     return code
 
