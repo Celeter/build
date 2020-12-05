@@ -48,7 +48,7 @@ def set_max_size(size=500):
 def show_progress(file_name, total_size, now_size):
     #print("进入进度回调函数")
     percent = now_size / total_size
-    bar_len = 40  # 进度条长总度
+    bar_len = 50  # 进度条长总度
     bar_str = '>' * round(bar_len * percent) + '=' * round(bar_len * (1 - percent))
     print('\r{:.2f}%\t[{}] {:.1f}/{:.1f}MB | {} '.format(
         percent * 100, bar_str, now_size / 1048576, total_size / 1048576, file_name), end='')
