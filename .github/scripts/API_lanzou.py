@@ -87,14 +87,14 @@ def get_apk_path(path):
 if __name__ == "__main__":
     if login(os.environ["LANZOU_ID"], os.environ["LANZOU_PSD"]) == LanZouCloud.SUCCESS:
         # 要存放的文件夹名
-        folder_name = os.environ["FOLDER_NAME"]
+        folder_name = os.environ["LANZOU_FOLDER"]
         print('文件夹名字:', folder_name)
 
         folders = lzy.get_move_folders()
         folder_id = folders.find_by_name(folder_name).id
         print('文件夹ID:', folder_id)
 
-        flie_path = get_apk_path(os.environ["FILE_PATH"])
+        flie_path = get_apk_path(os.environ["UPLOAD_FOLDER"])
         print('文件路径:', flie_path)
 
         if upload(flie_path, folder_id) == LanZouCloud.SUCCESS:
