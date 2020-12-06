@@ -69,23 +69,13 @@ jobs:
           ./gradlew assembleGoogleRelease
         working-directory: legado
 
-      - name: Get current time
-        uses: 1466587594/get-current-time@v2
-        id: current-time
-        with:
-          format: YY.MMDDHH
-          utcOffset: "+08:00"
-
-      - name: Rename App
-        run: mv -f ${{ github.workspace }}/legado/app/build/outputs/apk/google/release/*.apk ${{ github.workspace }}/legado_google_3.${{ steps.current-time.outputs.formattedTime }}.apk
-
       - name: Upload App
         run: python ./actions/.github/scripts/API_lanzou.py
         env:
           LANZOU_ID: ${{ secrets.LANZOU_ID }}
           LANZOU_PSD: ${{ secrets.LANZOU_PSD }}
-          FOLDER_NAME: '阅读3'
-          FILE_PATH: ${{ github.workspace }}/legado_google_3.${{ steps.current-time.outputs.formattedTime }}.apk
+          LANZOU_FOLDER: '阅读3'
+          UPLOAD_FOLDER: ${{ github.workspace }}/legado/app/build/outputs/apk/google/release/
 
       - name: Update README.md
         run: |
