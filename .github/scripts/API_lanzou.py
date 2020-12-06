@@ -61,7 +61,7 @@ def handler(fid, is_file):
 def upload(path, id):
     print('开始上传文件')
     # 解除大小限制
-    lzy.ignore_limits()
+    # lzy.ignore_limits()
     code = lzy.upload_file(path, id, callback=show_progress, uploaded_handler=handler)
     print('文件上传结果:', get_result(code))
     return code
