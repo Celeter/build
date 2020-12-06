@@ -48,10 +48,10 @@ def show_progress(file_name, total_size, now_size):
 
 
 def handler(fid, is_file):
-    # print("进入上传回调函数")
+    print("进入上传回调函数")
     if is_file:
         # 设置描述信息
-        code = lzy.set_desc(fid, 'Legado Google Play Version', is_file=True)
+        code = lzy.set_desc(fid, 'http://alanskycn.gitee.io/vip/', is_file=True)
         print('描述信息设置结果:', get_result(code))
         # 设置提取码
         # code = lzy.set_passwd(fid, passwd='', is_file=True)
