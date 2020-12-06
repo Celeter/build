@@ -75,12 +75,12 @@ def get_dir_list():
 
 def get_apk_path(path):
     if os.path.isfile(path):
-        return os.path.abspath(path)
+        return path
     else:
         file_list = os.listdir(path)
         for f in file_list:
             if os.path.splitext(f)[-1] == '.apk':
-                return os.path.abspath(f)
+                return os.path.join(path, f)
         return os.path.abspath(path)
 
 
