@@ -101,3 +101,9 @@ if __name__ == "__main__":
             # 获取文件夹分享信息
             info = lzy.get_share_info(folder_id, is_file=False)
             print('\n分享链接:{}\n提取码:{}'.format(info.url, '无' if info.pwd == '' else info.pwd))
+        else:
+            print('第一次上传失败，再次上传')
+            if upload(flie_path, folder_id) == LanZouCloud.SUCCESS:
+                # 获取文件夹分享信息
+                info = lzy.get_share_info(folder_id, is_file=False)
+                print('\n分享链接:{}\n提取码:{}'.format(info.url, '无' if info.pwd == '' else info.pwd))
