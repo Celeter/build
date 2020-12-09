@@ -6,9 +6,9 @@ lzy = LanZouCloud()
 
 def get_result(code):
     if code == LanZouCloud.SUCCESS:
-        return '成功'
+        return 'OK'
     else:
-        return f'失败,errorCode:{code}'
+        return f'NG errorCode:{code}'
 
 
 def login(ylogin, phpdisk_info):
@@ -20,16 +20,14 @@ def login(ylogin, phpdisk_info):
 
 
 def show_progress(file_name, total_size, now_size):
-    # print("进入进度回调函数")
     percent = now_size / total_size
-    bar_len = 100  # 进度条长总度
+    bar_len = 60  # 进度条长总度
     bar_str = '>' * round(bar_len * percent) + '=' * round(bar_len * (1 - percent))
     print('\r{:.2f}%\t[{}] {:.1f}/{:.1f}MB '.format(
         percent * 100, bar_str, now_size / 1048576, total_size / 1048576), end='')
 
 
 def handler(fid, is_file):
-    # print("进入上传回调函数")
     if is_file:
         code = lzy.set_desc(fid, 'http://alanskycn.gitee.io/vip/', is_file=True)
         print('描述信息设置结果:', get_result(code))
@@ -55,7 +53,6 @@ def get_apk_path(path):
 
 if __name__ == "__main__":
     if login(os.environ["LANZOU_ID"], os.environ["LANZOU_PSD"]) == LanZouCloud.SUCCESS:
-        # 要存放的文件夹名
         folder_name = os.environ["LANZOU_FOLDER"]
         print('文件夹名字:', folder_name)
 
@@ -67,12 +64,10 @@ if __name__ == "__main__":
         print('文件路径:', flie_path)
 
         if upload(flie_path, folder_id) == LanZouCloud.SUCCESS:
-            # 获取文件夹分享信息
             info = lzy.get_share_info(folder_id, is_file=False)
             print('\n分享链接:{}\n提取码:{}'.format(info.url, '无' if info.pwd == '' else info.pwd))
         else:
             print('第一次上传失败，再次上传')
             if upload(flie_path, folder_id) == LanZouCloud.SUCCESS:
-                # 获取文件夹分享信息
                 info = lzy.get_share_info(folder_id, is_file=False)
                 print('\n分享链接:{}\n提取码:{}'.format(info.url, '无' if info.pwd == '' else info.pwd))
