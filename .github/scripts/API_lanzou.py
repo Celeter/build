@@ -19,58 +19,27 @@ def login(ylogin, phpdisk_info):
     return code
 
 
-def logout():
-    print('开始登出')
-    code = lzy.logout()
-    print('登出结果:', get_result(code))
-    return code
-
-
-def set_max_size(size=500):
-    print('开始设置单文件大小上限')
-    # 设置单文件大小限制
-    code = lzy.set_max_size(size)
-    print('设置单文件大小上限结果:', get_result(code))
-    return code
-
-
 def show_progress(file_name, total_size, now_size):
     # print("进入进度回调函数")
     percent = now_size / total_size
-    bar_len = 50  # 进度条长总度
+    bar_len = 100  # 进度条长总度
     bar_str = '>' * round(bar_len * percent) + '=' * round(bar_len * (1 - percent))
-    # print('\r{:.2f}%\t[{}] {:.1f}/{:.1f}MB | {} '.format(
-    #    percent * 100, bar_str, now_size / 1048576, total_size / 1048576, file_name), end='')
     print('\r{:.2f}%\t[{}] {:.1f}/{:.1f}MB '.format(
         percent * 100, bar_str, now_size / 1048576, total_size / 1048576), end='')
-    # if total_size == now_size:
-    #    print('任务完成')
 
 
 def handler(fid, is_file):
-    print("进入上传回调函数")
+    # print("进入上传回调函数")
     if is_file:
-        # 设置描述信息
         code = lzy.set_desc(fid, 'http://alanskycn.gitee.io/vip/', is_file=True)
         print('描述信息设置结果:', get_result(code))
-        # 设置提取码
-        # code = lzy.set_passwd(fid, passwd='', is_file=True)
-        # print('提取码设置结果:', get_result(code))
 
 
 def upload(path, id):
     print('开始上传文件')
-    # 解除大小限制
-    # lzy.ignore_limits()
     code = lzy.upload_file(path, id, callback=show_progress, uploaded_handler=handler)
     print('文件上传结果:', get_result(code))
     return code
-
-
-def get_dir_list():
-    print('获取根路径文件夹列表')
-    dirs = lzy.get_dir_list()
-    print(dirs)
 
 
 def get_apk_path(path):
