@@ -23,15 +23,15 @@ jobs:
           fetch-depth: 0
           path: actions
 
-      - name: Set up JDK 1.8
+      - name: Set up JDK
         uses: actions/setup-java@v1
         with:
-          java-version: 1.8
+          java-version: 14
 
-      - name: Set up Python 3.8
+      - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: 3.8
+          python-version: 3.x
 
       - name: Set up lanzou-api
         run: |
