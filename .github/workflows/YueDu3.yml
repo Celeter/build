@@ -51,6 +51,11 @@ jobs:
       - name: Remove 18PlusList.txt
         run: rm -f $GITHUB_WORKSPACE/legado/app/src/main/assets/18PlusList.txt
 
+      - name: App minify
+        run: |
+          sed '/minifyEnabled/i\            shrinkResources true' $GITHUB_WORKSPACE/legado/app/build.gradle -i
+          sed 's/minifyEnabled false/minifyEnabled true/'         $GITHUB_WORKSPACE/legado/app/build.gradle -i
+
       - name: Checkout private key
         uses: actions/checkout@v2
         with:
