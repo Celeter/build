@@ -54,7 +54,7 @@ jobs:
       - name: App minify
         run: |
           sed '/minifyEnabled/i\            shrinkResources true' $GITHUB_WORKSPACE/legado/app/build.gradle -i
-          sed 's/minifyEnabled false/minifyEnabled true/'         $GITHUB_WORKSPACE/legado/app/build.gradle -i
+#          sed 's/minifyEnabled false/minifyEnabled true/'         $GITHUB_WORKSPACE/legado/app/build.gradle -i
 
       - name: Checkout private key
         uses: actions/checkout@v2
