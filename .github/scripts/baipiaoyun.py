@@ -21,8 +21,10 @@ def ajax(url, method='GET', headers=None, data=None, proxies=None):
 
 
 headers = {
-    'Content-Type': 'application/x-www-form-urlencoded',
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36 Edg/87.0.664.66'
+    'Referer': 'https://baipiaoyun.xyz/auth/login',
+    'Accept': 'application/json, text/javascript, */*; q=0.01',
+    'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.8.9980.88 Safari/537.36'
 }
 
 data = {
@@ -31,11 +33,11 @@ data = {
     'code': code if code is not None else ''
 }
 
-res = ajax('https://baipiaoyun.xyz/auth/login', method='POST', data=data)
+res = ajax('https://baipiaoyun.xyz/auth/login', method='POST', data=data, headers=headers)
 print(res.json())
 
 res = ajax('https://baipiaoyun.xyz/user')
-print(res.status_code)
+print('状态码:'+res.status_code)
 
 res = ajax('https://baipiaoyun.xyz/user/checkin', method='POST')
 print(res.json())
