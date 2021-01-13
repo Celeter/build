@@ -37,7 +37,7 @@ res = ajax('https://baipiaoyun.xyz/auth/login', method='POST', data=data, header
 print(res.json())
 
 res = ajax('https://baipiaoyun.xyz/user')
-print('状态码:'+res.status_code)
+print(f'状态码:{res.status_code}')
 
 res = ajax('https://baipiaoyun.xyz/user/checkin', method='POST')
 print(res.json())
