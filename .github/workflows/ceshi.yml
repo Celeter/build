@@ -34,5 +34,5 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: dist
-          path: ${github.workspace}/imgcomic_web/dist
+          path: ${github.workspace}/imgcomic_web
           if-no-files-found: error
