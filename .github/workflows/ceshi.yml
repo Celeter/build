@@ -1,0 +1,45 @@
+name: 测试
+
+on:
+
+  push:
+
+    branches: [ master ]
+
+
+jobs:
+
+  master:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout Project
+
+        uses: actions/checkout@v2
+
+        with:
+          repository: waifu-project/imgcomic_web
+
+          ref: master
+
+      - name: Build Project
+
+        run: |
+
+          npm install
+
+          npm run-script build
+
+      - name: Upload Files
+
+        uses: actions/upload-artifact@v2
+
+        with:
+
+          name: dist_master
+
+          path: dist
+
+          if-no-files-found: error
