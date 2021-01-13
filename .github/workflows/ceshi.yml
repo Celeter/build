@@ -15,7 +15,7 @@ jobs:
 
     steps:
 
-      - name: Checkout Project
+      - name: Checkout Project1
 
         uses: actions/checkout@v2
 
@@ -23,9 +23,20 @@ jobs:
           repository: waifu-project/imgcomic_web
 
           ref: master
+          path: xxx
 
+      - name: Checkout Legado Project
+
+        uses: actions/checkout@v2
+
+        with:
+
+          repository: waifu-project/imgcomic
+
+          ref: master
+        
       - name: Build Project
-
+        working-directory: xxx
         run: |
 
           npm install
@@ -40,6 +51,6 @@ jobs:
 
           name: dist_master
 
-          path: dist
+          path: xxx/dist
 
           if-no-files-found: error
