@@ -1,56 +1,38 @@
 name: 测试
 
 on:
-
   push:
-
     branches: [ master ]
 
 
 jobs:
-
   master:
-
     runs-on: ubuntu-latest
 
     steps:
-
       - name: Checkout Project1
-
         uses: actions/checkout@v2
-
         with:
           repository: waifu-project/imgcomic_web
-
           ref: master
-          path: xxx
+          path: ${github.workspace}/imgcomic_web
 
       - name: Checkout Legado Project
-
         uses: actions/checkout@v2
-
         with:
-
           repository: waifu-project/imgcomic
-
           ref: master
+          path: ${github.workspace}/imgcomic
         
       - name: Build Project
-        working-directory: xxx
+        working-directory: ${github.workspace}/imgcomic_web
         run: |
-
           npm install
-
           npm run-script build
 
       - name: Upload Files
-
         uses: actions/upload-artifact@v2
-
         with:
-
-          name: dist_master
-
-          path: xxx/dist
-
+          name: dist
+          path: ${github.workspace}/imgcomic_web/dist
           if-no-files-found: error
