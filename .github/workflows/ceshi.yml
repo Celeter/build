@@ -26,7 +26,7 @@ jobs:
         
       - name: Build Project
         working-directory: ${github.workspace}/imgcomic
-        run: sed "46c comsole.log(ctx.toDataURL("image/jpeg", 1));}" index.js -i
+        run: sed "46c console.log(ctx.toDataURL("image/jpeg", 1));}" index.js -i
         
       - name: Build Project
         working-directory: ${github.workspace}/imgcomic_web
