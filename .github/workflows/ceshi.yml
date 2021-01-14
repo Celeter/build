@@ -25,10 +25,6 @@ jobs:
           path: ${github.workspace}/imgcomic
         
       - name: Build Project
-        working-directory: ${github.workspace}/imgcomic
-        run: sed "46c console.log(ctx.toDataURL("image/jpeg", 1));}" index.js -i
-        
-      - name: Build Project
         working-directory: ${github.workspace}/imgcomic_web
         run: |
           npm install
