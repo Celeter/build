@@ -111,7 +111,7 @@ jobs:
              print(result)
              f.write(result)
         env:
-          READ_PATH: ${{ github.workspace }}/app/src/main/assets/updateLog.md
+          READ_PATH: ${{ github.workspace }}/legado/app/src/main/assets/updateLog.md
           WRITE_PATH: ${{ github.workspace }}/updateLog.md
 
       - name: Create Release
