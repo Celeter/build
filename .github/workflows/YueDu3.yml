@@ -98,6 +98,22 @@ jobs:
           git push
         working-directory: actions
 
+      - name: Get updateLog
+        shell: python
+        run: |
+         import re, os
+         with open(os.environ["FILE_PATH"], 'rb') as f:
+           content = f.read().decode('utf-8')
+         matcher = re.search(r'(\*\*[\d/]+\*\*[\w\W]+?)\*\*', content)
+         if matcher:
+           with open('./updateLogx.md', 'w') as f:
+             result = matcher.group(1)
+             print(result)
+             f.write(result)
+        env:
+          READ_PATH: ${{ github.workspace }}/app/src/main/assets/updateLog.md
+          WRITE_PATH: ${{ github.workspace }}/updateLog.md
+
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -106,6 +122,7 @@ jobs:
         with:
           tag_name: ${{ env.APP_NAME }}
           release_name: ${{ env.APP_NAME }}
+          body_path: ${{ github.workspace }}/updateLog.md
           draft: false
           prerelease: false
 
