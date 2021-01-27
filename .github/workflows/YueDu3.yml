@@ -7,6 +7,7 @@ on:
  # schedule:
     # 美国时间每周六9时5分（中国时间每周六17时5分）
  #   - cron: '5 9 * * 6'
+  workflow_dispatch:
   watch:
     types: [started]
 
@@ -16,31 +17,29 @@ jobs:
 
     if: ${{ github.actor == 'Celeter' }}
     steps:
-      # https://github.com/actions
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout this project
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
           path: actions
 
-      - name: Set up JDK
+      - name: Set Up JDK
         uses: actions/setup-java@v1
         with:
           java-version: 14
 
-      - name: Set up Python
+      - name: Set Up Python
         uses: actions/setup-python@v2
         with:
           python-version: 3.x
 
-      - name: Set up lanzou-api
+      - name: Set Up Dependence
         run: |
           pip install lanzou-api
 #          python -V
 #          python -m pip install --upgrade pip
 
-      - name: Checkout android project
+      - name: Checkout Android Project
         uses: actions/checkout@v2
         with:
           repository: Celeter/YueDu3
@@ -49,15 +48,15 @@ jobs:
           token: ${{ secrets.ACCESS_TOKEN }}
           path: legado
 
-      - name: Remove 18PlusList.txt
+      - name: Remove 18PlusList
         run: rm -f $GITHUB_WORKSPACE/legado/app/src/main/assets/18PlusList.txt
 
-#       - name: App minify
+#       - name: App Minify
 #         run: |
 #           sed '/minifyEnabled/i\            shrinkResources true' $GITHUB_WORKSPACE/legado/app/build.gradle -i
 #           sed 's/minifyEnabled false/minifyEnabled true/'         $GITHUB_WORKSPACE/legado/app/build.gradle -i
 
-      - name: Get updateLog
+      - name: Get Update Log
         shell: python
         run: |
          import re, os
@@ -73,14 +72,14 @@ jobs:
           READ_PATH: ${{ github.workspace }}/legado/app/src/main/assets/updateLog.md
           WRITE_PATH: ${{ github.workspace }}/updateLog.md
 
-      - name: Checkout private key
+      - name: Checkout Private Key
         uses: actions/checkout@v2
         with:
           repository: Celeter/secrets
           token: ${{ secrets.ACCESS_TOKEN }}
           path: key
 
-      - name: Decrypt large secret
+      - name: Decrypt Large Secret
         run: bash $GITHUB_WORKSPACE/actions/.github/scripts/decrypt_secret.sh
         env:
           LARGE_SECRET_PASSPHRASE: ${{ secrets.ANDROID_SECRET }}
@@ -103,19 +102,9 @@ jobs:
           done
           fileName="$(basename $file .apk)"
           filePath="${path}${file}"
+          echo "APP_PATH=$filePath" >> $GITHUB_ENV
           echo "APP_FILE=$file" >> $GITHUB_ENV
           echo "APP_NAME=$fileName" >> $GITHUB_ENV
-          echo "APP_PATH=$filePath" >> $GITHUB_ENV
-          
-      - name: Update README.md
-        run: |
-          sed "3c ### 当前最新版本: ${{ env.APP_FILE }}" README.md -i
-          sed "4c ### 最近更新时间: $(date -u -d '+8 hour' '+%Y-%m-%d %H:%M:%S')" README.md -i
-          git config user.name  Robot
-          git config user.email github-actions@github.com
-          git commit -m "update README.md" -a
-          git push
-        working-directory: actions
 
       - name: Create Release
         id: create_release
@@ -140,10 +129,20 @@ jobs:
           asset_name: ${{ env.APP_FILE }}
           asset_content_type: application/vnd.android.package-archive
 
-      - name: Upload App
+      - name: Upload App To LZ Cloud
         run: python ./actions/.github/scripts/API_lanzou.py
         env:
           LANZOU_ID: ${{ secrets.LANZOU_ID }}
           LANZOU_PSD: ${{ secrets.LANZOU_PSD }}
           LANZOU_FOLDER: '阅读3'
           UPLOAD_FOLDER: ${{ github.workspace }}/legado/app/build/outputs/apk/google/release/
+
+      - name: Update README
+        run: |
+          sed "3c ### 当前最新版本: ${{ env.APP_FILE }}" README.md -i
+          sed "4c ### 最近更新时间: $(date -u -d '+8 hour' '+%Y-%m-%d %H:%M:%S')" README.md -i
+          git config user.name  Robot
+          git config user.email github-actions@github.com
+          git commit -m "update README.md" -a
+          git push
+        working-directory: actions
