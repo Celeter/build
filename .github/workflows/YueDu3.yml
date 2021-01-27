@@ -74,14 +74,6 @@ jobs:
           ./gradlew assembleGoogleRelease
         working-directory: legado
 
-      - name: Upload App
-        run: python ./actions/.github/scripts/API_lanzou.py
-        env:
-          LANZOU_ID: ${{ secrets.LANZOU_ID }}
-          LANZOU_PSD: ${{ secrets.LANZOU_PSD }}
-          LANZOU_FOLDER: '阅读3'
-          UPLOAD_FOLDER: ${{ github.workspace }}/legado/app/build/outputs/apk/google/release/
-
       - name: Update README.md
         run: |
           path="${{ github.workspace }}/legado/app/build/outputs/apk/google/release/"
@@ -92,6 +84,15 @@ jobs:
             file=$f
            fi
           done
+          // 获取文件名
+          fileName="$(basename $file .apk)"
+          // 获取文件路径
+          filePath="${path}${file}"
+          // 设置环境变量
+          echo "APP_FILE=$file" >> $GITHUB_ENV
+          echo "APP_NAME=$fileName" >> $GITHUB_ENV
+          echo "APP_PATH=$filePath" >> $GITHUB_ENV
+          // 更新README.md
           sed "3c ### 当前最新版本: $file" README.md -i
           sed "4c ### 最近更新时间: $(date -u -d '+8 hour' '+%Y-%m-%d %H:%M:%S')" README.md -i
           git config user.name  Robot
@@ -100,3 +101,32 @@ jobs:
           git push
         working-directory: actions
 
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ env.APP_UPLOAD_NAME }}
+          release_name: ${{ env.APP_UPLOAD_NAME }}
+          draft: false
+          prerelease: false
+
+      - name: Upload Release Asset
+        id: upload-release-asset 
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ${{ env.APP_PATH }}
+          asset_name: ${{ env.APP_FILE }}
+          asset_content_type: application/vnd.android.package-archive
+
+      - name: Upload App
+        run: python ./actions/.github/scripts/API_lanzou.py
+        env:
+          LANZOU_ID: ${{ secrets.LANZOU_ID }}
+          LANZOU_PSD: ${{ secrets.LANZOU_PSD }}
+          LANZOU_FOLDER: '阅读3'
+          UPLOAD_FOLDER: ${{ github.workspace }}/legado/app/build/outputs/apk/google/release/
