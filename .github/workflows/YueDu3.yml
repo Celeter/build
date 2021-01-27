@@ -57,6 +57,22 @@ jobs:
 #           sed '/minifyEnabled/i\            shrinkResources true' $GITHUB_WORKSPACE/legado/app/build.gradle -i
 #           sed 's/minifyEnabled false/minifyEnabled true/'         $GITHUB_WORKSPACE/legado/app/build.gradle -i
 
+      - name: Get updateLog
+        shell: python
+        run: |
+         import re, os
+         with open(os.environ["READ_PATH"], 'rb') as f:
+           content = f.read().decode('utf-8')
+         matcher = re.search(r'(\*\*[\d/]+\*\*[\w\W]+?)\*\*', content)
+         if matcher:
+           with open(os.environ["WRITE_PATH"], 'w') as f:
+             result = matcher.group(1)
+             print(result)
+             f.write(result)
+        env:
+          READ_PATH: ${{ github.workspace }}/legado/app/src/main/assets/updateLog.md
+          WRITE_PATH: ${{ github.workspace }}/updateLog.md
+
       - name: Checkout private key
         uses: actions/checkout@v2
         with:
@@ -75,7 +91,7 @@ jobs:
           ./gradlew assembleGoogleRelease
         working-directory: legado
 
-      - name: Update README.md
+      - name: Set Env
         run: |
           path="${{ github.workspace }}/legado/app/build/outputs/apk/google/release/"
           files=$(ls $path)
@@ -90,29 +106,16 @@ jobs:
           echo "APP_FILE=$file" >> $GITHUB_ENV
           echo "APP_NAME=$fileName" >> $GITHUB_ENV
           echo "APP_PATH=$filePath" >> $GITHUB_ENV
-          sed "3c ### 当前最新版本: $file" README.md -i
+          
+      - name: Update README.md
+        run: |
+          sed "3c ### 当前最新版本: ${{ env.APP_FILE }}" README.md -i
           sed "4c ### 最近更新时间: $(date -u -d '+8 hour' '+%Y-%m-%d %H:%M:%S')" README.md -i
           git config user.name  Robot
           git config user.email github-actions@github.com
           git commit -m "update README.md" -a
           git push
         working-directory: actions
-
-      - name: Get updateLog
-        shell: python
-        run: |
-         import re, os
-         with open(os.environ["READ_PATH"], 'rb') as f:
-           content = f.read().decode('utf-8')
-         matcher = re.search(r'(\*\*[\d/]+\*\*[\w\W]+?)\*\*', content)
-         if matcher:
-           with open(os.environ["WRITE_PATH"], 'w') as f:
-             result = matcher.group(1)
-             print(result)
-             f.write(result)
-        env:
-          READ_PATH: ${{ github.workspace }}/legado/app/src/main/assets/updateLog.md
-          WRITE_PATH: ${{ github.workspace }}/updateLog.md
 
       - name: Create Release
         id: create_release
