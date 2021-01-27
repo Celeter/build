@@ -85,15 +85,11 @@ jobs:
             file=$f
            fi
           done
-          // 获取文件名
           fileName="$(basename $file .apk)"
-          // 获取文件路径
           filePath="${path}${file}"
-          // 设置环境变量
           echo "APP_FILE=$file" >> $GITHUB_ENV
           echo "APP_NAME=$fileName" >> $GITHUB_ENV
           echo "APP_PATH=$filePath" >> $GITHUB_ENV
-          // 更新README.md
           sed "3c ### 当前最新版本: $file" README.md -i
           sed "4c ### 最近更新时间: $(date -u -d '+8 hour' '+%Y-%m-%d %H:%M:%S')" README.md -i
           git config user.name  Robot
