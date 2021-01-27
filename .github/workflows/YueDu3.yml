@@ -102,11 +102,11 @@ jobs:
         shell: python
         run: |
          import re, os
-         with open(os.environ["FILE_PATH"], 'rb') as f:
+         with open(os.environ["READ_PATH"], 'rb') as f:
            content = f.read().decode('utf-8')
          matcher = re.search(r'(\*\*[\d/]+\*\*[\w\W]+?)\*\*', content)
          if matcher:
-           with open('./updateLogx.md', 'w') as f:
+           with open(os.environ["WRITE_PATH"], 'w') as f:
              result = matcher.group(1)
              print(result)
              f.write(result)
