@@ -105,8 +105,11 @@ jobs:
           echo "APP_PATH=$filePath" >> $GITHUB_ENV
           echo "APP_FILE=$file" >> $GITHUB_ENV
           echo "APP_NAME=$fileName" >> $GITHUB_ENV
+          tag_name=$(curl -s https://api.github.com/repos/Celeter/build/releases/latest|jq .tag_name -r)
+          echo "TAG_NAME=$tag_name" >> $GITHUB_ENV
 
       - name: Create Release
+        if: ${{ env.TAG_NAME != env.APP_NAME }}
         id: create_release
         uses: actions/create-release@v1
         env:
@@ -119,6 +122,7 @@ jobs:
           prerelease: false
 
       - name: Upload Release Asset
+        if: ${{ env.TAG_NAME != env.APP_NAME }}
         id: upload-release-asset 
         uses: actions/upload-release-asset@v1
         env:
