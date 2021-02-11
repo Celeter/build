@@ -28,16 +28,6 @@ jobs:
         with:
           java-version: 14
 
-      - uses: actions/cache@v2
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-build-${{ hashFiles('**/updateLog.md') }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            ${{ runner.os }}-build-${{ hashFiles('**/updateLog.md') }}-
-
-
       - name: Set Up Python
         uses: actions/setup-python@v2
         with:
@@ -57,6 +47,16 @@ jobs:
           fetch-depth: 1
           token: ${{ secrets.ACCESS_TOKEN }}
           path: legado
+
+      - uses: actions/cache@v2
+        working-directory: legado
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-legado-${{ hashFiles('**/updateLog.md') }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-legado-${{ hashFiles('**/updateLog.md') }}-
 
       - name: Remove 18PlusList
         run: rm -f $GITHUB_WORKSPACE/legado/app/src/main/assets/18PlusList.txt
