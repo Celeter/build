@@ -28,6 +28,16 @@ jobs:
         with:
           java-version: 14
 
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-build-${{ hashFiles('**/updateLog.md') }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ hashFiles('**/updateLog.md') }}-
+
+
       - name: Set Up Python
         uses: actions/setup-python@v2
         with:
@@ -87,7 +97,7 @@ jobs:
       - name: Build with Gradle
         run: |
           chmod +x gradlew
-          ./gradlew assembleGoogleRelease
+          ./gradlew assembleGoogleRelease --build-cache --parallel
         working-directory: legado
 
       - name: Set Env
