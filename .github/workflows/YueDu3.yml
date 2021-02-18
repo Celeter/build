@@ -49,7 +49,7 @@ jobs:
           path: legado
 
       - uses: actions/cache@v2
-        working-directory: legado
+        #working-directory: legado
         with:
           path: |
             ~/.gradle/caches
