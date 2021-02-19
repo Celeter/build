@@ -173,7 +173,7 @@ jobs:
 
       - name: Update README
         run: |
-          sed "3c ### 当前最新版本: ${{ env.APP_FILE }}" README.md -i
+          sed "3c ### 当前最新版本: ${{ env.APP_VER }}" README.md -i
           sed "4c ### 最近更新时间: $(date -u -d '+8 hour' '+%Y-%m-%d %H:%M:%S')" README.md -i
           git config user.name  Robot
           git config user.email github-actions@github.com
