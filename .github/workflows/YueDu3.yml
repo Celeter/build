@@ -49,7 +49,6 @@ jobs:
           path: legado
 
       - uses: actions/cache@v2
-        #working-directory: legado
         with:
           path: |
             ~/.gradle/caches
@@ -97,7 +96,7 @@ jobs:
       - name: Build with Gradle
         run: |
           chmod +x gradlew
-          ./gradlew assembleGoogleRelease --build-cache --parallel
+          ./gradlew assembleRelease --build-cache --parallel
         working-directory: legado
 
       - name: Set Env
@@ -113,7 +112,7 @@ jobs:
           version=${file:14:25}
           echo $version
           fileName="$(basename $file .apk)"
-          #filePath="${path}${file}"
+          filePath="${path}${file}"
           echo "APP_VER=$version" >> $GITHUB_ENV
           echo "APP_PATH=$filePath" >> $GITHUB_ENV
           echo "APP_FILE=$file" >> $GITHUB_ENV
