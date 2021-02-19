@@ -110,8 +110,11 @@ jobs:
             file=$f
            fi
           done
+          version=${file:14:25}
+          echo $version
           fileName="$(basename $file .apk)"
-          filePath="${path}${file}"
+          #filePath="${path}${file}"
+          echo "APP_VER=$version" >> $GITHUB_ENV
           echo "APP_PATH=$filePath" >> $GITHUB_ENV
           echo "APP_FILE=$file" >> $GITHUB_ENV
           echo "APP_NAME=$fileName" >> $GITHUB_ENV
@@ -139,7 +142,10 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${{ env.APP_PATH }}
+          asset_path: |
+            ${{ github.workspace }}/legado/app/build/outputs/apk/google/release/*.apk #${{ env.APP_PATH }}
+            ${{ github.workspace }}/legado/app/build/outputs/apk/app/release/*.apk
+            ${{ github.workspace }}/legado/app/build/outputs/apk/coolApk/release/*.apk
           asset_name: ${{ env.APP_FILE }}
           asset_content_type: application/vnd.android.package-archive
 
