@@ -54,16 +54,10 @@ jobs:
             ~/.gradle/caches
             ~/.gradle/wrapper
           key: ${{ runner.os }}-legado-${{ hashFiles('**/updateLog.md') }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            ${{ runner.os }}-legado-${{ hashFiles('**/updateLog.md') }}-
+          restore-keys: ${{ runner.os }}-legado-${{ hashFiles('**/updateLog.md') }}-
 
       - name: Remove 18PlusList
         run: rm -f $GITHUB_WORKSPACE/legado/app/src/main/assets/18PlusList.txt
-
-#       - name: App Minify
-#         run: |
-#           sed '/minifyEnabled/i\            shrinkResources true' $GITHUB_WORKSPACE/legado/app/build.gradle -i
-#           sed 's/minifyEnabled false/minifyEnabled true/'         $GITHUB_WORKSPACE/legado/app/build.gradle -i
 
       - name: Get Update Log
         shell: python
@@ -111,12 +105,12 @@ jobs:
           done
           version=${file:0-15:11}
           echo $version
-          fileName="$(basename $file .apk)"
-          filePath="${path}${file}"
+          #fileName="$(basename $file .apk)"
+          #filePath="${path}${file}"
           echo "APP_VER=$version" >> $GITHUB_ENV
-          echo "APP_PATH=$filePath" >> $GITHUB_ENV
-          echo "APP_FILE=$file" >> $GITHUB_ENV
-          echo "APP_NAME=$fileName" >> $GITHUB_ENV
+          #echo "APP_PATH=$filePath" >> $GITHUB_ENV
+          #echo "APP_FILE=$file" >> $GITHUB_ENV
+          #echo "APP_NAME=$fileName" >> $GITHUB_ENV
           tag_name=$(curl -s https://api.github.com/repos/Celeter/build/releases/latest|jq .tag_name -r)
           echo "TAG_NAME=$tag_name" >> $GITHUB_ENV
 
@@ -133,19 +127,40 @@ jobs:
           draft: false
           prerelease: false
 
-      - name: Upload Release Asset
+      - name: Upload Release Asset Google
         if: ${{ env.TAG_NAME != env.APP_NAME }}
-        id: upload-release-asset 
+        id: upload-release-asset-1
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: |
-            ${{ env.APP_PATH }}
-            ${{ github.workspace }}/legado/app/build/outputs/apk/app/release/legado_app_${{ env.APP_VER }}.apk
-            ${{ github.workspace }}/legado/app/build/outputs/apk/coolApk/release/legado_coolApk_${{ env.APP_VER }}.apk
-          #asset_name: ${{ env.APP_FILE }}
+          asset_path: ${{ github.workspace }}/legado/app/build/outputs/apk/google/release/legado_google_${{ env.APP_VER }}.apk
+          asset_name: legado_google_${{ env.APP_VER }}.apk
+          asset_content_type: application/vnd.android.package-archive
+
+      - name: Upload Release Asset CoolApk
+        if: ${{ env.TAG_NAME != env.APP_NAME }}
+        id: upload-release-asset-2
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ${{ github.workspace }}/legado/app/build/outputs/apk/coolApk/release/legado_coolApk_${{ env.APP_VER }}.apk
+          asset_name: legado_coolApk_${{ env.APP_VER }}.apk
+          asset_content_type: application/vnd.android.package-archive
+
+      - name: Upload Release Asset App
+        if: ${{ env.TAG_NAME != env.APP_NAME }}
+        id: upload-release-asset-3
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ${{ github.workspace }}/legado/app/build/outputs/apk/app/release/legado_app_${{ env.APP_VER }}.apk
+          asset_name: legado_app_${{ env.APP_VER }}.apk
           asset_content_type: application/vnd.android.package-archive
 
       - name: Upload App To LZ Cloud
