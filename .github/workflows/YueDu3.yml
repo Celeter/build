@@ -128,7 +128,7 @@ jobs:
           prerelease: false
 
       - name: Upload Release Asset Google
-        if: ${{ env.TAG_NAME != env.APP_NAME }}
+        if: ${{ env.TAG_NAME != env.APP_VER }}
         id: upload-release-asset-1
         uses: actions/upload-release-asset@v1
         env:
@@ -140,7 +140,7 @@ jobs:
           asset_content_type: application/vnd.android.package-archive
 
       - name: Upload Release Asset CoolApk
-        if: ${{ env.TAG_NAME != env.APP_NAME }}
+        if: ${{ env.TAG_NAME != env.APP_VER }}
         id: upload-release-asset-2
         uses: actions/upload-release-asset@v1
         env:
@@ -152,7 +152,7 @@ jobs:
           asset_content_type: application/vnd.android.package-archive
 
       - name: Upload Release Asset App
-        if: ${{ env.TAG_NAME != env.APP_NAME }}
+        if: ${{ env.TAG_NAME != env.APP_VER }}
         id: upload-release-asset-3
         uses: actions/upload-release-asset@v1
         env:
