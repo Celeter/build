@@ -1,0 +1,167 @@
+name: Build YueDu 3
+
+# https://docs.github.com/cn/actions/configuring-and-managing-workflows/creating-and-storing-encrypted-secrets
+# https://docs.github.com/cn/actions/reference/events-that-trigger-workflows
+# https://docs.github.com/cn/actions/reference/workflow-commands-for-github-actions
+on:
+ # schedule:
+    # 美国时间每周六9时5分（中国时间每周六17时5分）
+ #   - cron: '5 9 * * 6'
+  workflow_dispatch:
+  watch:
+    types: [started]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    if: ${{ github.actor == 'Celeter' }}
+    steps:
+      - name: Checkout this project
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          path: actions
+
+      - name: Set Up JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: 14
+
+      - name: Checkout Android Project
+        uses: actions/checkout@v2
+        with:
+          repository: Celeter/YueDu3
+          ref: master
+          fetch-depth: 1
+          token: ${{ secrets.ACCESS_TOKEN }}
+          path: legado
+
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-legado-${{ hashFiles('**/updateLog.md') }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: ${{ runner.os }}-legado-${{ hashFiles('**/updateLog.md') }}-
+
+      - name: Remove 18PlusList
+        run: rm -f $GITHUB_WORKSPACE/legado/app/src/main/assets/18PlusList.txt
+
+      - name: Get Update Log
+        shell: python
+        run: |
+         import re, os
+         with open(os.environ["READ_PATH"], 'rb') as f:
+           content = f.read().decode('utf-8')
+         matcher = re.search(r'(\*\*[\d/]+\*\*[\w\W]+?)\*\*', content)
+         if matcher:
+           with open(os.environ["WRITE_PATH"], 'w') as f:
+             result = matcher.group(1)
+             print(result)
+             f.write(result)
+        env:
+          READ_PATH: ${{ github.workspace }}/legado/app/src/main/assets/updateLog.md
+          WRITE_PATH: ${{ github.workspace }}/updateLog.md
+
+      - name: Checkout Private Key
+        uses: actions/checkout@v2
+        with:
+          repository: Celeter/secrets
+          token: ${{ secrets.ACCESS_TOKEN }}
+          path: key
+
+      - name: Decrypt Large Secret
+        run: bash $GITHUB_WORKSPACE/actions/.github/scripts/decrypt_secret.sh
+        env:
+          LARGE_SECRET_PASSPHRASE: ${{ secrets.ANDROID_SECRET }}
+
+      - name: Build with Gradle
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleRelease --build-cache --parallel
+        working-directory: legado
+
+      - name: Set Env
+        run: |
+          path="${{ github.workspace }}/legado/app/build/outputs/apk/google/release/"
+          files=$(ls $path)
+          for f in $files
+          do
+           if [[ $f == *"apk" ]]; then
+            file=$f
+           fi
+          done
+          version=${file:0-15:11}
+          echo $version
+          #fileName="$(basename $file .apk)"
+          #filePath="${path}${file}"
+          echo "APP_VER=$version" >> $GITHUB_ENV
+          #echo "APP_PATH=$filePath" >> $GITHUB_ENV
+          #echo "APP_FILE=$file" >> $GITHUB_ENV
+          #echo "APP_NAME=$fileName" >> $GITHUB_ENV
+          tag_name=$(curl -s https://api.github.com/repos/Celeter/build/releases/latest|jq .tag_name -r)
+          echo "TAG_NAME=$tag_name" >> $GITHUB_ENV
+
+      - name: Create Release
+        if: ${{ env.TAG_NAME != env.APP_VER }}
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ env.APP_VER }}
+          release_name: ${{ env.APP_VER }}
+          body_path: ${{ github.workspace }}/updateLog.md
+          draft: false
+          prerelease: false
+
+      - name: Upload Release Asset Google
+        if: ${{ env.TAG_NAME != env.APP_VER }}
+        id: upload-release-asset-1
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ${{ github.workspace }}/legado/app/build/outputs/apk/google/release/legado_google_${{ env.APP_VER }}.apk
+          asset_name: legado_google_${{ env.APP_VER }}.apk
+          asset_content_type: application/vnd.android.package-archive
+
+      - name: Upload Release Asset CoolApk
+        if: ${{ env.TAG_NAME != env.APP_VER }}
+        id: upload-release-asset-2
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ${{ github.workspace }}/legado/app/build/outputs/apk/coolApk/release/legado_coolApk_${{ env.APP_VER }}.apk
+          asset_name: legado_coolApk_${{ env.APP_VER }}.apk
+          asset_content_type: application/vnd.android.package-archive
+
+      - name: Upload Release Asset App
+        if: ${{ env.TAG_NAME != env.APP_VER }}
+        id: upload-release-asset-3
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ${{ github.workspace }}/legado/app/build/outputs/apk/app/release/legado_app_${{ env.APP_VER }}.apk
+          asset_name: legado_app_${{ env.APP_VER }}.apk
+          asset_content_type: application/vnd.android.package-archive
+
+      - name: Upload App To LZ Cloud
+        run: |
+          bash ./actions/.github/scripts/lzy.sh "legado_app_${{ env.APP_VER }}.apk" "$GITHUB_WORKSPACE/legado/app/build/outputs/apk/app/release/legado_app_${{ env.APP_VER }}.apk" "2219239" 
+
+      - name: Update README
+        run: |
+          sed "3c ### 当前最新版本: ${{ env.APP_VER }}" README.md -i
+          sed "4c ### 最近更新时间: $(date -u -d '+8 hour' '+%Y-%m-%d %H:%M:%S')" README.md -i
+          git config user.name  Robot
+          git config user.email github-actions@github.com
+          git commit -m "update README.md" -a
+          git push
+        working-directory: actions
