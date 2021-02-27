@@ -153,8 +153,13 @@ jobs:
           asset_content_type: application/vnd.android.package-archive
 
       - name: Upload App To LZ Cloud
+        env:
+          LANZOU_ID: ${{ secrets.LANZOU_ID }}
+          LANZOU_PSD: ${{ secrets.LANZOU_PSD }}
         run: |
-          bash ./actions/.github/scripts/lzy.sh "legado_app_${{ env.APP_VER }}.apk" "$GITHUB_WORKSPACE/legado/app/build/outputs/apk/app/release/legado_app_${{ env.APP_VER }}.apk" "2219239" 
+          bash ./actions/.github/scripts/lzy.sh "legado_app_${{ env.APP_VER }}.apk" \
+          "$GITHUB_WORKSPACE/legado/app/build/outputs/apk/app/release/legado_app_${{ env.APP_VER }}.apk" "2219239" 
+          echo "分享链接: https://wwa.lanzous.com/b0d8bblej"
 
       - name: Update README
         run: |
