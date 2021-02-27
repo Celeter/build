@@ -1,7 +1,6 @@
 name: abc
 
 on: [workflow_dispatch]
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -10,11 +9,11 @@ jobs:
       - uses: actions/setup-python@v2
         with:
           python-version: 3.x
-
       - run: pip install lanzou-api
-
       - name: Create File
-        run: echo '123'>>1.txt
+        run: |
+          echo '123'>>1.txt
+          bash ./.github/scripts/lzy.sh 1.txt $GITHUB_WORKSPACE/1.txt 2219239 
 
       - name: Upload File To LZ Cloud
         run: python ./.github/scripts/API_lanzou.py
