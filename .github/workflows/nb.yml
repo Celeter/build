@@ -1,0 +1,18 @@
+name: ac
+
+on: [workflow_dispatch]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+   
+      - name: TEST
+        env:
+          LANZOU_ID: ${{ secrets.LANZOU_ID }}
+          LANZOU_PSD: ${{ secrets.LANZOU_PSD }}
+        run: |
+          echo '123'>>1.txt.zip
+          bash ./.github/scripts/lzy.sh "1.txt.zip" "$GITHUB_WORKSPACE/1.txt.zip" "2219239" 
+
+     
