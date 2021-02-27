@@ -1,0 +1,26 @@
+name: ttt
+
+on: [workflow_dispatch]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: 3.x
+
+      - run: pip install lanzou-api
+
+      - name: Create File
+        run: echo '123'>>legado/1.apk
+
+      - name: Upload File To LZ Cloud
+        run: python ./.github/scripts/API_lanzou.py
+        env:
+          LANZOU_ID: ${{ secrets.LANZOU_ID }}
+          LANZOU_PSD: ${{ secrets.LANZOU_PSD }}
+          LANZOU_FOLDER: '阅读3'
+          UPLOAD_FOLDER: ${{ github.workspace }}
+
