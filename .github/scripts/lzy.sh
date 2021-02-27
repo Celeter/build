@@ -10,7 +10,7 @@ export PATH
 #	项目: https://github.com/XIU2/Shell
 # --------------------------------------------------------------
 
-USERNAME="cooler" # 蓝奏云用户名
+USERNAME="CoolMan" # 蓝奏云用户名
 COOKIE_PHPDISK_INFO="$LANZOU_PSD" # 替换 XXX 为 Cookie 中 phpdisk_info 的值
 COOKIE_YLOGIN="$LANZOU_ID" # 替换 XXX 为 Cookie 中 ylogin 的值
 TOKEN="XXX" # 微信推送链接 Token，可选
