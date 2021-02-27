@@ -90,6 +90,7 @@ jobs:
           do
            if [[ $f == *"apk" ]]; then
             file=$f
+            break
            fi
           done
           version=${file:0-15:11}
@@ -170,3 +171,4 @@ jobs:
           git commit -m "update README.md" -a
           git push
         working-directory: actions
+ 
