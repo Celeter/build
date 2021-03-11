@@ -10,14 +10,13 @@ export PATH
 #	项目: https://github.com/XIU2/Shell
 # --------------------------------------------------------------
 
-USERNAME="CoolMan" # 蓝奏云用户名
 COOKIE_PHPDISK_INFO="$LANZOU_PSD" # 替换 XXX 为 Cookie 中 phpdisk_info 的值
 COOKIE_YLOGIN="$LANZOU_ID" # 替换 XXX 为 Cookie 中 ylogin 的值
 TOKEN="XXX" # 微信推送链接 Token，可选
 
 UA="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.3670.190 Safari/537.36"
 HEADER_CHECK_LOGIN="User-Agent: ${UA}
-Referer: https://up.woozooo.com/mydisk.php?item=files&action=index&u=${USERNAME}
+Referer: https://up.woozooo.com/mydisk.php?item=files&action=index&u=${COOKIE_YLOGIN}
 Accept-Language: zh-CN,zh;q=0.9"
 
 URL_ACCOUNT="https://pc.woozooo.com/account.php"
