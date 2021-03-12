@@ -86,7 +86,7 @@ class lzyCloud(object):
 
     # 上传文件/文件夹内的文件
     def upload(self, dir, folder_id):
-        if dir is None or folder_id is None:
+        if dir is None:
             self._log('请指定上传的文件路径')
             return
         if folder_id is None:
