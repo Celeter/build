@@ -153,13 +153,23 @@ jobs:
           asset_name: legado_app_${{ env.APP_VER }}.apk
           asset_content_type: application/vnd.android.package-archive
 
+#      - name: Upload App To LZ Cloud
+#        env:
+#          LANZOU_ID: ${{ secrets.LANZOU_ID }}
+#          LANZOU_PSD: ${{ secrets.LANZOU_PSD }}
+#        run: |
+#          bash ./actions/.github/scripts/lzy.sh "legado_google_${{ env.APP_VER }}.apk" \
+#          "$GITHUB_WORKSPACE/legado/app/build/outputs/apk/google/release/legado_google_${{ env.APP_VER }}.apk" "2219239"
+#          echo "分享链接: https://wwa.lanzous.com/b0d8bblej"
+
       - name: Upload App To LZ Cloud
         env:
-          LANZOU_ID: ${{ secrets.LANZOU_ID }}
-          LANZOU_PSD: ${{ secrets.LANZOU_PSD }}
+          ylogin: ${{ secrets.LANZOU_ID }}
+          phpdisk_info: ${{ secrets.LANZOU_PSD }}
         run: |
-          bash ./actions/.github/scripts/lzy.sh "legado_google_${{ env.APP_VER }}.apk" \
-          "$GITHUB_WORKSPACE/legado/app/build/outputs/apk/google/release/legado_google_${{ env.APP_VER }}.apk" "2219239" 
+          python3 ./actions/.github/scripts/lzy_web.py "legado_google_${{ env.APP_VER }}.apk" \
+          "$GITHUB_WORKSPACE/legado/app/build/outputs/apk/google/release/legado_google_${{ env.APP_VER }}.apk" \
+          "2219239"
           echo "分享链接: https://wwa.lanzous.com/b0d8bblej"
 
       - name: Update README
